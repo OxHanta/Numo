@@ -3,20 +3,30 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Numo - Stock & Crypto Intelligence API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: watchlist
+    description: User watchlist management
+  - name: portfolio
+    description: Portfolio tracking and P&L
+  - name: alerts
+    description: Price alerts management
+  - name: market
+    description: Market data proxy (Polygon.io)
+  - name: news
+    description: Financial news feed (Finnhub)
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +34,355 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── Watchlist ─────────────────────────────────────────────────────────────
+  /watchlist:
+    get:
+      operationId: getWatchlist
+      tags: [watchlist]
+      summary: Get user's watchlist
+      responses:
+        "200":
+          description: List of watchlist items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WatchlistItem"
+    post:
+      operationId: addToWatchlist
+      tags: [watchlist]
+      summary: Add asset to watchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddWatchlistItemBody"
+      responses:
+        "201":
+          description: Item added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistItem"
+
+  /watchlist/{ticker}:
+    delete:
+      operationId: removeFromWatchlist
+      tags: [watchlist]
+      summary: Remove asset from watchlist
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Item removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /watchlist/movers:
+    get:
+      operationId: getWatchlistMovers
+      tags: [watchlist]
+      summary: Top gainers and losers in the watchlist
+      responses:
+        "200":
+          description: Movers data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistMovers"
+
+  # ── Portfolio ──────────────────────────────────────────────────────────────
+  /portfolio/summary:
+    get:
+      operationId: getPortfolioSummary
+      tags: [portfolio]
+      summary: Portfolio summary totals and day change
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioSummary"
+
+  /portfolio/positions:
+    get:
+      operationId: getPortfolioPositions
+      tags: [portfolio]
+      summary: List all portfolio positions with P&L
+      responses:
+        "200":
+          description: Positions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PortfolioPosition"
+    post:
+      operationId: addPortfolioPosition
+      tags: [portfolio]
+      summary: Add a new position
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddPositionBody"
+      responses:
+        "201":
+          description: Position added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioPosition"
+
+  /portfolio/positions/{id}:
+    put:
+      operationId: updatePortfolioPosition
+      tags: [portfolio]
+      summary: Update a position
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePositionBody"
+      responses:
+        "200":
+          description: Position updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioPosition"
+    delete:
+      operationId: deletePortfolioPosition
+      tags: [portfolio]
+      summary: Delete (close) a position
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Position closed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  # ── Alerts ────────────────────────────────────────────────────────────────
+  /alerts:
+    get:
+      operationId: getAlerts
+      tags: [alerts]
+      summary: List user's active alerts
+      responses:
+        "200":
+          description: Alerts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+    post:
+      operationId: createAlert
+      tags: [alerts]
+      summary: Create a price alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAlertBody"
+      responses:
+        "201":
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  /alerts/{id}:
+    delete:
+      operationId: deleteAlert
+      tags: [alerts]
+      summary: Delete an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Alert deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /alerts/{id}/snooze:
+    patch:
+      operationId: snoozeAlert
+      tags: [alerts]
+      summary: Snooze an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SnoozeAlertBody"
+      responses:
+        "200":
+          description: Alert snoozed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  /alerts/history:
+    get:
+      operationId: getAlertHistory
+      tags: [alerts]
+      summary: Get alert trigger history (last 90 days)
+      responses:
+        "200":
+          description: Alert history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlertHistoryEntry"
+
+  # ── Market Data ───────────────────────────────────────────────────────────
+  /market/search:
+    get:
+      operationId: searchAssets
+      tags: [market]
+      summary: Search for stocks and crypto by ticker or name
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AssetSearchResult"
+
+  /market/quote/{ticker}:
+    get:
+      operationId: getQuote
+      tags: [market]
+      summary: Get current price quote for an asset
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Quote data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+
+  /market/chart/{ticker}:
+    get:
+      operationId: getChartData
+      tags: [market]
+      summary: Get OHLCV chart data for an asset
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: timeframe
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [1D, 5D, 1M, 3M, 6M, 1Y, 5Y]
+            default: 1M
+      responses:
+        "200":
+          description: OHLCV data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChartData"
+
+  # ── News ──────────────────────────────────────────────────────────────────
+  /news:
+    get:
+      operationId: getNewsFeed
+      tags: [news]
+      summary: Get personalised news feed for user's watchlist assets
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: News articles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsFeedResponse"
+
+  /news/market:
+    get:
+      operationId: getMarketNews
+      tags: [news]
+      summary: Get general market and financial news
+      responses:
+        "200":
+          description: Market news
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NewsArticle"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +390,350 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success]
+
+    WatchlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        name:
+          type: string
+        assetType:
+          type: string
+          enum: [stock, crypto, etf]
+        addedAt:
+          type: string
+          format: date-time
+        currentPrice:
+          type: number
+          nullable: true
+        priceChange:
+          type: number
+          nullable: true
+        priceChangePct:
+          type: number
+          nullable: true
+      required: [id, ticker, name, assetType, addedAt]
+
+    AddWatchlistItemBody:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        assetType:
+          type: string
+          enum: [stock, crypto, etf]
+      required: [ticker, name, assetType]
+
+    WatchlistMovers:
+      type: object
+      properties:
+        gainers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WatchlistItem"
+        losers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WatchlistItem"
+      required: [gainers, losers]
+
+    PortfolioSummary:
+      type: object
+      properties:
+        totalValue:
+          type: number
+        totalCost:
+          type: number
+        totalPnl:
+          type: number
+        totalPnlPct:
+          type: number
+        dayChange:
+          type: number
+        dayChangePct:
+          type: number
+        positionCount:
+          type: integer
+      required: [totalValue, totalCost, totalPnl, totalPnlPct, dayChange, dayChangePct, positionCount]
+
+    PortfolioPosition:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        name:
+          type: string
+        assetType:
+          type: string
+          enum: [stock, crypto, etf]
+        quantity:
+          type: number
+        avgBuyPrice:
+          type: number
+        purchaseDate:
+          type: string
+          format: date
+        currentPrice:
+          type: number
+          nullable: true
+        currentValue:
+          type: number
+          nullable: true
+        costBasis:
+          type: number
+        unrealisedPnl:
+          type: number
+          nullable: true
+        unrealisedPnlPct:
+          type: number
+          nullable: true
+        isClosed:
+          type: boolean
+        closedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required: [id, ticker, name, assetType, quantity, avgBuyPrice, purchaseDate, costBasis, isClosed]
+
+    AddPositionBody:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        assetType:
+          type: string
+          enum: [stock, crypto, etf]
+        quantity:
+          type: number
+        avgBuyPrice:
+          type: number
+        purchaseDate:
+          type: string
+          format: date
+      required: [ticker, name, assetType, quantity, avgBuyPrice, purchaseDate]
+
+    UpdatePositionBody:
+      type: object
+      properties:
+        quantity:
+          type: number
+        avgBuyPrice:
+          type: number
+        purchaseDate:
+          type: string
+          format: date
+
+    Alert:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        name:
+          type: string
+        alertType:
+          type: string
+          enum: [price_above, price_below, pct_change]
+        targetPrice:
+          type: number
+          nullable: true
+        pctThreshold:
+          type: number
+          nullable: true
+        isActive:
+          type: boolean
+        snoozedUntil:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        lastTriggeredAt:
+          type: string
+          format: date-time
+          nullable: true
+      required: [id, ticker, name, alertType, isActive, createdAt]
+
+    CreateAlertBody:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        alertType:
+          type: string
+          enum: [price_above, price_below, pct_change]
+        targetPrice:
+          type: number
+          nullable: true
+        pctThreshold:
+          type: number
+          nullable: true
+      required: [ticker, name, alertType]
+
+    SnoozeAlertBody:
+      type: object
+      properties:
+        duration:
+          type: string
+          enum: [1h, 4h, 24h]
+      required: [duration]
+
+    AlertHistoryEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        alertId:
+          type: integer
+        ticker:
+          type: string
+        alertType:
+          type: string
+        triggeredAt:
+          type: string
+          format: date-time
+        priceAtTrigger:
+          type: number
+        targetPrice:
+          type: number
+          nullable: true
+      required: [id, alertId, ticker, alertType, triggeredAt, priceAtTrigger]
+
+    AssetSearchResult:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        assetType:
+          type: string
+          enum: [stock, crypto, etf]
+        exchange:
+          type: string
+          nullable: true
+      required: [ticker, name, assetType]
+
+    Quote:
+      type: object
+      properties:
+        ticker:
+          type: string
+        price:
+          type: number
+        open:
+          type: number
+        high:
+          type: number
+        low:
+          type: number
+        previousClose:
+          type: number
+        change:
+          type: number
+        changePct:
+          type: number
+        volume:
+          type: integer
+          nullable: true
+        updatedAt:
+          type: string
+          format: date-time
+      required: [ticker, price, open, high, low, previousClose, change, changePct, updatedAt]
+
+    ChartCandle:
+      type: object
+      properties:
+        time:
+          type: integer
+          description: Unix timestamp in seconds
+        open:
+          type: number
+        high:
+          type: number
+        low:
+          type: number
+        close:
+          type: number
+        volume:
+          type: number
+      required: [time, open, high, low, close, volume]
+
+    ChartData:
+      type: object
+      properties:
+        ticker:
+          type: string
+        timeframe:
+          type: string
+        candles:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartCandle"
+      required: [ticker, timeframe, candles]
+
+    NewsArticle:
+      type: object
+      properties:
+        id:
+          type: string
+        headline:
+          type: string
+        source:
+          type: string
+        url:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        summary:
+          type: string
+          nullable: true
+        image:
+          type: string
+          nullable: true
+        tickers:
+          type: array
+          items:
+            type: string
+        sentiment:
+          type: string
+          enum: [bullish, neutral, bearish]
+          nullable: true
+      required: [id, headline, source, url, publishedAt, tickers]
+
+    NewsFeedResponse:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: "#/components/schemas/NewsArticle"
+        page:
+          type: integer
+        hasMore:
+          type: boolean
+      required: [articles, page, hasMore]
