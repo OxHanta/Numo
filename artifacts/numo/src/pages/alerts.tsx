@@ -55,9 +55,9 @@ export default function Alerts() {
         <TabsList className="w-auto mb-6 p-1">
           <TabsTrigger value="active" className="px-6">
             Active
-            {(alerts?.length ?? 0) > 0 && (
+            {Array.isArray(alerts) && alerts.length > 0 && (
               <span className="ml-2 text-[10px] font-bold bg-primary text-primary-foreground rounded-full px-1.5 py-0.5">
-                {alerts?.length}
+                {alerts.length}
               </span>
             )}
           </TabsTrigger>
@@ -70,7 +70,7 @@ export default function Alerts() {
             <div className="space-y-3">
               {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
             </div>
-          ) : alerts?.length === 0 ? (
+          ) : !Array.isArray(alerts) || alerts.length === 0 ? (
             <div className="text-center py-20 bg-card border border-border rounded-xl">
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
                 <Bell className="w-7 h-7 text-muted-foreground" />
@@ -83,7 +83,7 @@ export default function Alerts() {
             </div>
           ) : (
             <div className="space-y-3">
-              {alerts?.map((alert, i) => {
+              {alerts.map((alert, i) => {
                 const meta = getAlertMeta(alert.alertType);
                 const AlertIcon = meta.icon;
                 return (
@@ -145,7 +145,7 @@ export default function Alerts() {
             <div className="space-y-3">
               {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}
             </div>
-          ) : history?.length === 0 ? (
+          ) : !Array.isArray(history) || history.length === 0 ? (
             <div className="text-center py-20 bg-card border border-border rounded-xl">
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-7 h-7 text-muted-foreground" />
@@ -165,7 +165,7 @@ export default function Alerts() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
-                  {history?.map((entry) => {
+                  {history.map((entry) => {
                     const meta = getAlertMeta(entry.alertType);
                     const EntryIcon = meta.icon;
                     return (

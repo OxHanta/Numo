@@ -87,7 +87,7 @@ export default function Watchlist() {
                   <Skeleton className="h-8 w-full" />
                   <Skeleton className="h-8 w-full" />
                 </div>
-              ) : searchResults?.length ? (
+              ) : Array.isArray(searchResults) && searchResults.length > 0 ? (
                 <div className="py-2">
                   {searchResults.map((asset) => (
                     <div key={asset.ticker} className="px-4 py-3 hover:bg-secondary flex items-center justify-between group">
@@ -123,7 +123,7 @@ export default function Watchlist() {
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="font-bold text-base">Tracked Assets</h2>
           <span className="text-xs text-muted-foreground">
-            {watchlist?.length ?? 0} {watchlist?.length === 1 ? "asset" : "assets"}
+            {Array.isArray(watchlist) ? watchlist.length : 0} {Array.isArray(watchlist) && watchlist.length === 1 ? "asset" : "assets"}
           </span>
         </div>
         <table className="w-full text-sm text-left">
@@ -145,7 +145,7 @@ export default function Watchlist() {
                   <td className="px-6 py-4"><Skeleton className="h-8 w-8 ml-auto" /></td>
                 </tr>
               ))
-            ) : watchlist?.length === 0 ? (
+            ) : !Array.isArray(watchlist) || watchlist.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-12 text-center text-muted-foreground">
                   <div className="flex flex-col items-center gap-2">
@@ -156,7 +156,7 @@ export default function Watchlist() {
                 </td>
               </tr>
             ) : (
-              watchlist?.map((item, i) => {
+              watchlist.map((item, i) => {
                 const isPositive = (item.priceChangePct || 0) >= 0;
                 return (
                   <motion.tr 

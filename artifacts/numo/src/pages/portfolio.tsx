@@ -118,7 +118,7 @@ export default function Portfolio() {
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="font-bold text-base">Positions</h2>
           <span className="text-xs text-muted-foreground">
-            {positions?.length ?? 0} {positions?.length === 1 ? "holding" : "holdings"}
+            {Array.isArray(positions) ? positions.length : 0} {Array.isArray(positions) && positions.length === 1 ? "holding" : "holdings"}
           </span>
         </div>
         <table className="w-full text-sm text-left">
@@ -146,7 +146,7 @@ export default function Portfolio() {
                   <td className="px-6 py-4"><Skeleton className="h-7 w-7 ml-auto" /></td>
                 </tr>
               ))
-            ) : positions?.length === 0 ? (
+            ) : !Array.isArray(positions) || positions.length === 0 ? (
               <tr>
                 <td colSpan={7} className="px-6 py-16 text-center text-muted-foreground">
                   <div className="flex flex-col items-center gap-3">
@@ -164,7 +164,7 @@ export default function Portfolio() {
                 </td>
               </tr>
             ) : (
-              positions?.map((pos, i) => {
+              positions.map((pos, i) => {
                 const isPositive = (pos.unrealisedPnlPct || 0) >= 0;
                 return (
                   <motion.tr
@@ -307,7 +307,7 @@ function AddPositionDialog({ open, onOpenChange }: { open: boolean; onOpenChange
                       <Skeleton className="h-8 w-full" />
                       <Skeleton className="h-8 w-full" />
                     </div>
-                  ) : searchResults?.length ? (
+                  ) : Array.isArray(searchResults) && searchResults.length > 0 ? (
                     searchResults.map((asset) => (
                       <div
                         key={asset.ticker}

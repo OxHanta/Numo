@@ -29,9 +29,16 @@ export default function News() {
         <TabsContent value="market" className="space-y-6">
           {loadingMarketNews ? (
              <NewsSkeletons />
-          ) : marketNews?.map(article => (
-            <NewsArticleCard key={article.id} article={article} />
-          ))}
+          ) : Array.isArray(marketNews) && marketNews.length > 0 ? (
+            marketNews.map(article => (
+              <NewsArticleCard key={article.id} article={article} />
+            ))
+          ) : !loadingMarketNews ? (
+            <div className="text-center py-16 bg-card border border-border rounded-xl">
+              <h3 className="text-base font-semibold mb-1">No market news available</h3>
+              <p className="text-sm text-muted-foreground">Check back later for the latest financial news.</p>
+            </div>
+          ) : null}
         </TabsContent>
         
         <TabsContent value="my-feed" className="space-y-6">
