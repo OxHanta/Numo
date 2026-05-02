@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCurrency } from "@/context/currency";
+import { MarketHoursIndicator } from "@/components/market-hours";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
@@ -63,6 +64,8 @@ export function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
+
+        <MarketHoursIndicator />
 
         {/* NGX Currency Toggle */}
         <div className="px-4 py-3 border-t border-border/60">
