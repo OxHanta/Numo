@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import { Activity, TrendingUp, Shield, Zap, ArrowRight, BarChart2, Bell } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { useAuthModal } from "@/context/auth-modal";
 
 const STATS = [
   { value: "Real-time", label: "Market Data" },
@@ -10,6 +11,8 @@ const STATS = [
 ];
 
 export default function Landing() {
+  const { open } = useAuthModal();
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden flex flex-col">
       {/* Header */}
@@ -22,14 +25,15 @@ export default function Landing() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Link href="/sign-in">
-            <Button variant="ghost" className="font-medium text-sm">Sign In</Button>
-          </Link>
-          <Link href="/sign-up">
-            <Button className="font-medium text-sm bg-primary text-primary-foreground shadow-sm shadow-primary/30">
-              Get Started <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-            </Button>
-          </Link>
+          <Button variant="ghost" className="font-medium text-sm" onClick={() => open("sign-in")}>
+            Sign In
+          </Button>
+          <Button
+            className="font-medium text-sm bg-primary text-primary-foreground shadow-sm shadow-primary/30"
+            onClick={() => open("sign-up")}
+          >
+            Get Started <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+          </Button>
         </div>
       </header>
 
@@ -57,16 +61,21 @@ export default function Landing() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
-              <Link href="/sign-up">
-                <Button size="lg" className="w-full sm:w-auto text-base h-12 px-8 font-semibold shadow-lg shadow-primary/20">
-                  Open Numo Free <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <Link href="/sign-in">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base h-12 px-8 font-semibold">
-                  Sign In
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="w-full sm:w-auto text-base h-12 px-8 font-semibold shadow-lg shadow-primary/20"
+                onClick={() => open("sign-up")}
+              >
+                Open Numo Free <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto text-base h-12 px-8 font-semibold"
+                onClick={() => open("sign-in")}
+              >
+                Sign In
+              </Button>
             </div>
 
             {/* Stats bar */}
@@ -137,11 +146,13 @@ export default function Landing() {
           >
             <h2 className="text-3xl font-extrabold tracking-tight mb-4">Ready to take control?</h2>
             <p className="text-muted-foreground mb-8">Join investors who track smarter with Numo. Free to start, no credit card required.</p>
-            <Link href="/sign-up">
-              <Button size="lg" className="text-base h-12 px-10 font-semibold shadow-lg shadow-primary/20">
-                Get Started Free <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              className="text-base h-12 px-10 font-semibold shadow-lg shadow-primary/20"
+              onClick={() => open("sign-up")}
+            >
+              Get Started Free <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </motion.div>
         </section>
       </main>
@@ -182,5 +193,3 @@ function FeatureCard({ icon: Icon, color, bg, title, description }: {
     </motion.div>
   );
 }
-
-import { cn } from "@/lib/utils";
