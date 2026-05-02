@@ -40,11 +40,11 @@ export default function Alerts() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
-      <div className="flex items-end justify-between">
+    <div className="p-4 md:p-6 max-w-5xl mx-auto space-y-4 md:space-y-6">
+      <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground font-medium">Notifications</p>
-          <h1 className="text-3xl font-bold tracking-tight">Alerts</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Alerts</h1>
         </div>
         <Button className="shadow-sm">
           <Plus className="w-4 h-4 mr-2" /> New Alert

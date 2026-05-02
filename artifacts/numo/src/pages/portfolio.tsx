@@ -76,150 +76,245 @@ export default function Portfolio() {
     },
   ];
 
+  const positionsArray = Array.isArray(positions) ? positions : [];
+
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div className="flex items-end justify-between">
+    <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4 md:space-y-6">
+      <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground font-medium">Overview</p>
-          <h1 className="text-3xl font-bold tracking-tight">Portfolio</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Portfolio</h1>
         </div>
-        <Button onClick={() => setIsAddOpen(true)} className="shadow-sm">
-          <Plus className="w-4 h-4 mr-2" /> Add Position
+        <Button onClick={() => setIsAddOpen(true)} className="shadow-sm" size="sm">
+          <Plus className="w-4 h-4 mr-1.5" /> Add Position
         </Button>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      {/* Summary Cards — 2-col on mobile, 4-col on desktop */}
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
         {statCards.map((card) => (
           <div key={card.label} className={cn(
-            "p-5 rounded-xl bg-card border border-border relative overflow-hidden"
+            "p-4 md:p-5 rounded-xl bg-card border border-border relative overflow-hidden"
           )}>
             <div className={cn("absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none", card.gradient)} />
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{card.label}</span>
-              <div className={cn("w-7 h-7 rounded-md flex items-center justify-center", card.iconBg)}>
-                <card.icon className={cn("w-3.5 h-3.5", card.iconColor)} />
+            <div className="flex items-center justify-between mb-2 md:mb-3">
+              <span className="text-[10px] md:text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight">{card.label}</span>
+              <div className={cn("w-6 h-6 md:w-7 md:h-7 rounded-md flex items-center justify-center shrink-0", card.iconBg)}>
+                <card.icon className={cn("w-3 h-3 md:w-3.5 md:h-3.5", card.iconColor)} />
               </div>
             </div>
             {card.value === null ? (
-              <Skeleton className="h-8 w-28" />
+              <Skeleton className="h-6 md:h-8 w-20" />
             ) : (
-              <div className={cn("text-2xl font-bold tracking-tight flex items-baseline gap-1.5", card.textColor)}>
+              <div className={cn("text-lg md:text-2xl font-bold tracking-tight flex items-baseline gap-1", card.textColor)}>
                 {card.value}
-                {card.sub && <span className="text-sm font-semibold opacity-70">{card.sub}</span>}
+                {card.sub && <span className="text-xs font-semibold opacity-70 hidden sm:inline">{card.sub}</span>}
               </div>
             )}
           </div>
         ))}
       </div>
 
-      {/* Positions Table */}
+      {/* Positions */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+        <div className="px-4 md:px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="font-bold text-base">Positions</h2>
           <span className="text-xs text-muted-foreground">
-            {Array.isArray(positions) ? positions.length : 0} {Array.isArray(positions) && positions.length === 1 ? "holding" : "holdings"}
+            {positionsArray.length} {positionsArray.length === 1 ? "holding" : "holdings"}
           </span>
         </div>
-        <table className="w-full text-sm text-left">
-          <thead className="bg-secondary/40 text-muted-foreground text-xs font-semibold uppercase tracking-wide">
-            <tr>
-              <th className="px-6 py-3">Asset</th>
-              <th className="px-6 py-3 text-right">Holdings</th>
-              <th className="px-6 py-3 text-right">Avg Cost</th>
-              <th className="px-6 py-3 text-right">Current Price</th>
-              <th className="px-6 py-3 text-right">Value</th>
-              <th className="px-6 py-3 text-right">Unrealised P&L</th>
-              <th className="px-6 py-3 text-right"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/60">
-            {loadingPositions ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i}>
-                  <td className="px-6 py-4"><Skeleton className="h-9 w-24" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-5 w-16 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-5 w-24 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="h-7 w-7 ml-auto" /></td>
-                </tr>
-              ))
-            ) : !Array.isArray(positions) || positions.length === 0 ? (
+
+        {/* Desktop Table */}
+        <div className="hidden md:block">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-secondary/40 text-muted-foreground text-xs font-semibold uppercase tracking-wide">
               <tr>
-                <td colSpan={7} className="px-6 py-16 text-center text-muted-foreground">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center">
-                      <Briefcase className="w-6 h-6 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">Portfolio is empty</p>
-                      <p className="text-xs mt-1">Add your first position to start tracking.</p>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={() => setIsAddOpen(true)}>
-                      <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Position
-                    </Button>
-                  </div>
-                </td>
+                <th className="px-6 py-3">Asset</th>
+                <th className="px-6 py-3 text-right">Holdings</th>
+                <th className="px-6 py-3 text-right">Avg Cost</th>
+                <th className="px-6 py-3 text-right">Current Price</th>
+                <th className="px-6 py-3 text-right">Value</th>
+                <th className="px-6 py-3 text-right">Unrealised P&L</th>
+                <th className="px-6 py-3 text-right"></th>
               </tr>
-            ) : (
-              positions.map((pos, i) => {
+            </thead>
+            <tbody className="divide-y divide-border/60">
+              {loadingPositions ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i}>
+                    <td className="px-6 py-4"><Skeleton className="h-9 w-24" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-5 w-16 ml-auto" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-5 w-24 ml-auto" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-5 w-20 ml-auto" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-7 w-7 ml-auto" /></td>
+                  </tr>
+                ))
+              ) : positionsArray.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-16 text-center text-muted-foreground">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">Portfolio is empty</p>
+                        <p className="text-xs mt-1">Add your first position to start tracking.</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => setIsAddOpen(true)}>
+                        <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Position
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                positionsArray.map((pos, i) => {
+                  const isPositive = (pos.unrealisedPnlPct || 0) >= 0;
+                  return (
+                    <motion.tr
+                      key={pos.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className="hover:bg-secondary/30 transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <Link href={`/assets/${pos.ticker}`} className="block">
+                          <div className="font-bold text-sm group-hover:text-primary transition-colors">{pos.ticker}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5">{pos.name}</div>
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 text-right font-medium tabular-nums">{pos.quantity}</td>
+                      <td className="px-6 py-4 text-right text-muted-foreground tabular-nums">{formatCurrency(pos.avgBuyPrice)}</td>
+                      <td className="px-6 py-4 text-right font-medium tabular-nums">{formatCurrency(pos.currentPrice || 0)}</td>
+                      <td className="px-6 py-4 text-right font-bold tabular-nums">{formatCurrency(pos.currentValue || 0)}</td>
+                      <td className="px-6 py-4 text-right">
+                        <div className={cn("flex flex-col items-end", isPositive ? "text-success" : "text-destructive")}>
+                          <span className="font-bold tabular-nums text-sm">
+                            {isPositive ? "+" : ""}{formatCurrency(pos.unrealisedPnl || 0)}
+                          </span>
+                          <span className="text-[11px] tabular-nums">
+                            {isPositive ? "+" : ""}{formatPercentage(pos.unrealisedPnlPct || 0)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <Link href={`/assets/${pos.ticker}`}>
+                              <DropdownMenuItem className="cursor-pointer">View Asset</DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuItem
+                              className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
+                              onClick={() => deleteMutation.mutate({ id: pos.id })}
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" /> Close Position
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </td>
+                    </motion.tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card List */}
+        <div className="md:hidden">
+          {loadingPositions ? (
+            <div className="divide-y divide-border/60">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="px-4 py-4 flex items-center justify-between gap-3">
+                  <div className="space-y-1.5 flex-1">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-3 w-28" />
+                  </div>
+                  <div className="space-y-1.5 items-end flex flex-col">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-3 w-14" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : positionsArray.length === 0 ? (
+            <div className="px-4 py-14 text-center text-muted-foreground">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                  <Briefcase className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground text-sm">Portfolio is empty</p>
+                  <p className="text-xs mt-1">Add your first position to start tracking.</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setIsAddOpen(true)}>
+                  <Plus className="w-3.5 h-3.5 mr-1.5" /> Add Position
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/60">
+              {positionsArray.map((pos, i) => {
                 const isPositive = (pos.unrealisedPnlPct || 0) >= 0;
                 return (
-                  <motion.tr
+                  <motion.div
                     key={pos.id}
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
-                    className="hover:bg-secondary/30 transition-colors group"
+                    className="px-4 py-4"
                   >
-                    <td className="px-6 py-4">
-                      <Link href={`/assets/${pos.ticker}`} className="block">
-                        <div className="font-bold text-sm group-hover:text-primary transition-colors">{pos.ticker}</div>
-                        <div className="text-[11px] text-muted-foreground mt-0.5">{pos.name}</div>
+                    <div className="flex items-start justify-between gap-3">
+                      <Link href={`/assets/${pos.ticker}`} className="flex-1 min-w-0">
+                        <div className="font-bold text-sm">{pos.ticker}</div>
+                        <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{pos.name}</div>
+                        <div className="text-xs text-muted-foreground mt-1.5">
+                          {pos.quantity} shares · avg {formatCurrency(pos.avgBuyPrice)}
+                        </div>
                       </Link>
-                    </td>
-                    <td className="px-6 py-4 text-right font-medium tabular-nums">{pos.quantity}</td>
-                    <td className="px-6 py-4 text-right text-muted-foreground tabular-nums">{formatCurrency(pos.avgBuyPrice)}</td>
-                    <td className="px-6 py-4 text-right font-medium tabular-nums">{formatCurrency(pos.currentPrice || 0)}</td>
-                    <td className="px-6 py-4 text-right font-bold tabular-nums">{formatCurrency(pos.currentValue || 0)}</td>
-                    <td className="px-6 py-4 text-right">
-                      <div className={cn("flex flex-col items-end", isPositive ? "text-success" : "text-destructive")}>
-                        <span className="font-bold tabular-nums text-sm">
-                          {isPositive ? "+" : ""}{formatCurrency(pos.unrealisedPnl || 0)}
-                        </span>
-                        <span className="text-[11px] tabular-nums">
-                          {isPositive ? "+" : ""}{formatPercentage(pos.unrealisedPnlPct || 0)}
-                        </span>
+                      <div className="flex items-start gap-2 shrink-0">
+                        <div className="text-right">
+                          <div className="font-bold text-sm tabular-nums">{formatCurrency(pos.currentValue || 0)}</div>
+                          <div className={cn("text-xs font-semibold tabular-nums mt-0.5", isPositive ? "text-success" : "text-destructive")}>
+                            {isPositive ? "+" : ""}{formatPercentage(pos.unrealisedPnlPct || 0)}
+                          </div>
+                          <div className={cn("text-[11px] tabular-nums", isPositive ? "text-success" : "text-destructive")}>
+                            {isPositive ? "+" : ""}{formatCurrency(pos.unrealisedPnl || 0)}
+                          </div>
+                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 mt-0.5">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <Link href={`/assets/${pos.ticker}`}>
+                              <DropdownMenuItem className="cursor-pointer">View Asset</DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuItem
+                              className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
+                              onClick={() => deleteMutation.mutate({ id: pos.id })}
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" /> Close Position
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <Link href={`/assets/${pos.ticker}`}>
-                            <DropdownMenuItem className="cursor-pointer">View Asset</DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuItem
-                            className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer"
-                            onClick={() => deleteMutation.mutate({ id: pos.id })}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Close Position
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </td>
-                  </motion.tr>
+                    </div>
+                  </motion.div>
                 );
-              })
-            )}
-          </tbody>
-        </table>
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <AddPositionDialog open={isAddOpen} onOpenChange={setIsAddOpen} />
@@ -277,7 +372,7 @@ function AddPositionDialog({ open, onOpenChange }: { open: boolean; onOpenChange
 
   return (
     <Dialog open={open} onOpenChange={(val) => { onOpenChange(val); if (!val) resetForm(); }}>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent className="sm:max-w-[420px] mx-4 sm:mx-auto">
         <DialogHeader>
           <DialogTitle className="text-lg">Add Position</DialogTitle>
         </DialogHeader>

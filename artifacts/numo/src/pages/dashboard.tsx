@@ -2,7 +2,7 @@ import { useGetPortfolioSummary, useGetWatchlistMovers, useGetMarketNews } from 
 import { formatCurrency, formatPercentage } from "@/lib/format";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, TrendingDown, Clock, Newspaper, ArrowRight, DollarSign, BarChart2, Wallet } from "lucide-react";
+import { TrendingUp, TrendingDown, Clock, Newspaper, ArrowRight, BarChart2, Wallet } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -25,12 +25,12 @@ export default function Dashboard() {
   const pnlPositive = (summary?.totalPnl || 0) >= 0;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
+    <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4 md:space-y-6">
       {/* Header */}
       <div className="flex items-end justify-between">
         <div>
           <p className="text-sm text-muted-foreground font-medium">{getGreeting()}{user?.firstName ? `, ${user.firstName}` : ""}</p>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard</h1>
         </div>
         <span className="text-xs text-muted-foreground tabular-nums hidden sm:block">
           {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
@@ -38,7 +38,7 @@ export default function Dashboard() {
       </div>
 
       {/* Portfolio Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-3">
         {/* Total Value */}
         <Card className="bg-card border border-border relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
@@ -50,9 +50,9 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {loadingSummary ? (
-              <Skeleton className="h-9 w-[150px]" />
+              <Skeleton className="h-8 w-[140px]" />
             ) : (
-              <div className="text-3xl font-bold tracking-tight">{formatCurrency(summary?.totalValue || 0)}</div>
+              <div className="text-2xl md:text-3xl font-bold tracking-tight">{formatCurrency(summary?.totalValue || 0)}</div>
             )}
           </CardContent>
         </Card>
@@ -76,13 +76,13 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {loadingSummary ? (
-              <Skeleton className="h-9 w-[150px]" />
+              <Skeleton className="h-8 w-[140px]" />
             ) : (
-              <div className={cn("text-3xl font-bold tracking-tight flex items-baseline gap-2",
+              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2",
                 dayChangePositive ? "text-success" : "text-destructive"
               )}>
                 {formatCurrency(summary?.dayChange || 0)}
-                <span className="text-base font-semibold opacity-70">
+                <span className="text-sm md:text-base font-semibold opacity-70">
                   {formatPercentage(summary?.dayChangePct || 0)}
                 </span>
               </div>
@@ -107,13 +107,13 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {loadingSummary ? (
-              <Skeleton className="h-9 w-[150px]" />
+              <Skeleton className="h-8 w-[140px]" />
             ) : (
-              <div className={cn("text-3xl font-bold tracking-tight flex items-baseline gap-2",
+              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2",
                 pnlPositive ? "text-success" : "text-destructive"
               )}>
                 {pnlPositive ? "+" : ""}{formatCurrency(summary?.totalPnl || 0)}
-                <span className="text-base font-semibold opacity-70">
+                <span className="text-sm md:text-base font-semibold opacity-70">
                   {formatPercentage(summary?.totalPnlPct || 0)}
                 </span>
               </div>
@@ -122,8 +122,8 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Lower grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* Lower grid — stack on mobile, 2-col on md+ */}
+      <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
         {/* Watchlist Movers */}
         <Card className="col-span-1 border border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -145,7 +145,7 @@ export default function Dashboard() {
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                   </div>
-                ) : movers?.gainers?.length ? (
+                ) : Array.isArray(movers?.gainers) && movers.gainers.length > 0 ? (
                   <div className="space-y-1">
                     {movers.gainers.slice(0, 3).map(asset => (
                       <Link key={asset.ticker} href={`/assets/${asset.ticker}`}>
@@ -182,7 +182,7 @@ export default function Dashboard() {
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
                   </div>
-                ) : movers?.losers?.length ? (
+                ) : Array.isArray(movers?.losers) && movers.losers.length > 0 ? (
                   <div className="space-y-1">
                     {movers.losers.slice(0, 3).map(asset => (
                       <Link key={asset.ticker} href={`/assets/${asset.ticker}`}>
