@@ -52,8 +52,11 @@ export default function Watchlist() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Watchlist</h1>
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground font-medium">Track assets</p>
+          <h1 className="text-3xl font-bold tracking-tight">Watchlist</h1>
+        </div>
       </div>
 
       {/* Search */}
@@ -61,8 +64,8 @@ export default function Watchlist() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
-            placeholder="Search stocks, crypto, ETFs..." 
-            className="pl-9 h-12 bg-card"
+            placeholder="Search stocks, crypto, ETFs to add..." 
+            className="pl-9 h-11 bg-card"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
@@ -116,14 +119,20 @@ export default function Watchlist() {
       </div>
 
       {/* Watchlist Table */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="font-bold text-base">Tracked Assets</h2>
+          <span className="text-xs text-muted-foreground">
+            {watchlist?.length ?? 0} {watchlist?.length === 1 ? "asset" : "assets"}
+          </span>
+        </div>
         <table className="w-full text-sm text-left">
-          <thead className="bg-secondary/50 text-muted-foreground uppercase text-xs font-semibold">
+          <thead className="bg-secondary/40 text-muted-foreground uppercase text-xs font-semibold tracking-wide">
             <tr>
-              <th className="px-6 py-4">Asset</th>
-              <th className="px-6 py-4 text-right">Price</th>
-              <th className="px-6 py-4 text-right">24h Change</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-3">Asset</th>
+              <th className="px-6 py-3 text-right">Price</th>
+              <th className="px-6 py-3 text-right">24h Change</th>
+              <th className="px-6 py-3 text-right"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
