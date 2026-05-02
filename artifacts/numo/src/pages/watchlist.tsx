@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AssetTypeBadge } from "@/components/asset-type-badge";
 
 export default function Watchlist() {
   const queryClient = useQueryClient();
@@ -96,7 +97,7 @@ export default function Watchlist() {
                       <div>
                         <div className="font-bold flex items-center gap-2">
                           {asset.ticker}
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase">{asset.assetType}</span>
+                          <AssetTypeBadge type={asset.assetType} />
                         </div>
                         <div className="text-xs text-muted-foreground">{asset.name}</div>
                       </div>

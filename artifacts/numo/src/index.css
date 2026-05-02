@@ -62,7 +62,8 @@
   --color-sidebar-accent-border: var(--sidebar-accent-border);
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: "Inter", sans-serif;
+  /* Work Sans — the Numo design system typeface */
+  --font-sans: "Work Sans", sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: "Space Mono", monospace;
 
@@ -72,71 +73,91 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ── Light theme ─────────────────────────────────────────────── */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
+  --background: 120 10% 98%;
+  --foreground: 120 15% 8%;
   --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --card-border: 240 5.9% 90%;
+  --card-foreground: 120 15% 8%;
+  --card-border: 120 8% 90%;
   --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --popover-border: 240 5.9% 90%;
-  --primary: 226 71% 40%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 226 71% 40%;
-  --radius: 0.5rem;
-  --chart-1: 12 76% 61%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 197 37% 24%;
-  --chart-4: 43 74% 66%;
-  --chart-5: 27 87% 67%;
-  --success: 142 71% 45%;
-  --success-foreground: 0 0% 98%;
-  --warning: 38 92% 50%;
-  --warning-foreground: 0 0% 98%;
+  --popover-foreground: 120 15% 8%;
+  --popover-border: 120 8% 90%;
+  /* Primary: #4CAF50 → hsl(122 39% 49%) */
+  --primary: 122 39% 42%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 120 8% 94%;
+  --secondary-foreground: 120 15% 15%;
+  --muted: 120 6% 94%;
+  --muted-foreground: 120 5% 46%;
+  --accent: 120 8% 92%;
+  --accent-foreground: 120 15% 15%;
+  /* Destructive: red for losses */
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 120 6% 88%;
+  --input: 120 6% 88%;
+  --ring: 122 39% 42%;
+  --radius: 0.625rem;
+  /* Success: same green family as primary */
+  --success: 122 44% 46%;
+  --success-foreground: 0 0% 100%;
+  /* Warning: #FF9800 → hsl(36 100% 50%) */
+  --warning: 36 100% 50%;
+  --warning-foreground: 0 0% 100%;
+  --chart-1: 122 39% 42%;
+  --chart-2: 36 100% 50%;
+  --chart-3: 271 76% 53%;
+  --chart-4: 217 91% 60%;
+  --chart-5: 338 80% 55%;
 }
 
+/* ── Dark theme (primary Numo look) ─────────────────────────── */
 .dark {
-  --background: 228 15% 5%;
-  --foreground: 0 0% 98%;
-  --card: 228 15% 8%;
-  --card-foreground: 0 0% 98%;
-  --card-border: 228 15% 15%;
-  --popover: 228 15% 8%;
-  --popover-foreground: 0 0% 98%;
-  --popover-border: 228 15% 15%;
-  --primary: 231 63% 58%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 228 15% 12%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 228 15% 12%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 228 15% 12%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 228 15% 15%;
-  --input: 228 15% 15%;
-  --ring: 231 63% 58%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
-  --success: 142 71% 45%;
-  --success-foreground: 0 0% 98%;
-  --warning: 38 92% 50%;
-  --warning-foreground: 0 0% 98%;
+  /* Background: very dark greenish — echoes the design system canvas */
+  --background: 120 18% 5%;
+  --foreground: 0 0% 96%;
+  --card: 120 14% 8%;
+  --card-foreground: 0 0% 96%;
+  --card-border: 120 10% 14%;
+  --popover: 120 14% 8%;
+  --popover-foreground: 0 0% 96%;
+  --popover-border: 120 10% 14%;
+  /* Primary: #4CAF50 brightened slightly for dark bg → hsl(122 46% 52%) */
+  --primary: 122 46% 52%;
+  --primary-foreground: 120 60% 5%;
+  --secondary: 120 10% 12%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 120 10% 12%;
+  --muted-foreground: 120 5% 60%;
+  --accent: 120 10% 14%;
+  --accent-foreground: 0 0% 96%;
+  /* Destructive: bright red */
+  --destructive: 0 72% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 120 10% 15%;
+  --input: 120 10% 15%;
+  --ring: 122 46% 52%;
+  /* Success: distinct bright green for gains */
+  --success: 142 60% 45%;
+  --success-foreground: 0 0% 100%;
+  /* Warning: #FF9800 */
+  --warning: 36 100% 50%;
+  --warning-foreground: 0 0% 100%;
+  --chart-1: 122 46% 52%;
+  --chart-2: 36 100% 55%;
+  --chart-3: 271 76% 65%;
+  --chart-4: 217 91% 65%;
+  --chart-5: 338 80% 60%;
+  --sidebar: 120 16% 6%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-border: 120 10% 13%;
+  --sidebar-primary: 122 46% 52%;
+  --sidebar-primary-foreground: 120 60% 5%;
+  --sidebar-accent: 120 10% 12%;
+  --sidebar-accent-foreground: 0 0% 96%;
+  --sidebar-accent-border: 120 10% 14%;
+  --sidebar-ring: 122 46% 52%;
 }
 
 @layer base {

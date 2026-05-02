@@ -34,7 +34,7 @@ export default function Landing() {
         {/* Hero */}
         <section className="relative py-24 px-6 lg:px-8 flex flex-col items-center text-center overflow-hidden">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,_var(--tw-gradient-stops))] from-primary/15 via-background to-background" />
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_30%_at_70%_60%,_var(--tw-gradient-stops))] from-blue-500/5 to-transparent" />
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_30%_at_70%_60%,_var(--tw-gradient-stops))] from-warning/5 to-transparent" />
 
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -49,7 +49,7 @@ export default function Landing() {
 
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.08]">
               Your Personal{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-primary/70">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-warning to-primary">
                 Finance Cockpit
               </span>
             </h1>
@@ -99,8 +99,8 @@ export default function Landing() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <FeatureCard
                 icon={Activity}
-                color="text-blue-400"
-                bg="bg-blue-400/10"
+                color="text-warning"
+                bg="bg-warning/10"
                 title="Dense Data, Zero Noise"
                 description="Information-rich interfaces that respect your time. See exactly what you need at a glance."
               />
@@ -120,8 +120,8 @@ export default function Landing() {
               />
               <FeatureCard
                 icon={Shield}
-                color="text-green-400"
-                bg="bg-green-400/10"
+                color="text-primary"
+                bg="bg-primary/10"
                 title="Secure & Private"
                 description="Your data stays yours. Backed by enterprise-grade auth — no ads, no data selling."
               />

@@ -13,6 +13,7 @@ import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { motion, AnimatePresence } from "framer-motion";
+import { AssetTypeBadge } from "@/components/asset-type-badge";
 
 export default function Portfolio() {
   const queryClient = useQueryClient();
@@ -412,9 +413,7 @@ function AddPositionDialog({ open, onOpenChange }: { open: boolean; onOpenChange
                         <div>
                           <div className="font-bold text-sm flex items-center gap-2">
                             {asset.ticker}
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary text-muted-foreground uppercase font-medium">
-                              {asset.assetType}
-                            </span>
+                            <AssetTypeBadge type={asset.assetType} />
                           </div>
                           <div className="text-xs text-muted-foreground mt-0.5">{asset.name}</div>
                         </div>
