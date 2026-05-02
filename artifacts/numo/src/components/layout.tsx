@@ -5,11 +5,13 @@ import { useClerk, useUser } from "@clerk/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCurrency } from "@/context/currency";
 
 export function Layout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const { signOut } = useClerk();
   const { user } = useUser();
+  const { ngxMode, setNgxMode } = useCurrency();
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -61,6 +63,37 @@ export function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
+
+        {/* NGX Currency Toggle */}
+        <div className="px-4 py-3 border-t border-border/60">
+          <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground/60 mb-2">
+            NGX Prices
+          </p>
+          <div className="flex rounded-lg bg-secondary/50 p-0.5 gap-0.5">
+            <button
+              onClick={() => setNgxMode("ngn")}
+              className={cn(
+                "flex-1 text-xs font-semibold py-1.5 rounded-md transition-all",
+                ngxMode === "ngn"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              ₦ NGN
+            </button>
+            <button
+              onClick={() => setNgxMode("usd")}
+              className={cn(
+                "flex-1 text-xs font-semibold py-1.5 rounded-md transition-all",
+                ngxMode === "usd"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              $ USD
+            </button>
+          </div>
+        </div>
 
         {/* User */}
         <div className="p-3 border-t border-border/60">

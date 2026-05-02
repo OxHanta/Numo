@@ -5,6 +5,7 @@ import { Switch, Route, useLocation, Router as WouterRouter, Redirect } from "wo
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Layout } from "@/components/layout";
+import { CurrencyProvider } from "@/context/currency";
 
 import Landing from "./pages/landing";
 import Dashboard from "./pages/dashboard";
@@ -219,6 +220,7 @@ function ClerkProviderWithRoutes() {
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
     >
       <QueryClientProvider client={queryClient}>
+        <CurrencyProvider>
         <ClerkQueryClientCacheInvalidator />
         <Switch>
           <Route path="/" component={HomeRedirect} />
@@ -252,6 +254,7 @@ function ClerkProviderWithRoutes() {
           </Route>
           <Route component={NotFound} />
         </Switch>
+        </CurrencyProvider>
       </QueryClientProvider>
     </ClerkProvider>
   );

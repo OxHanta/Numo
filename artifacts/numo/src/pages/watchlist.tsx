@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useGetWatchlist, useSearchAssets, useAddToWatchlist, useRemoveFromWatchlist } from "@workspace/api-client-react";
-import { formatCurrency, formatPercentage } from "@/lib/format";
+import { formatPercentage } from "@/lib/format";
+import { useCurrency } from "@/context/currency";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +16,7 @@ import { AssetTypeBadge } from "@/components/asset-type-badge";
 
 export default function Watchlist() {
   const queryClient = useQueryClient();
+  const { formatPrice } = useCurrency();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 300);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -181,7 +183,7 @@ export default function Watchlist() {
                         </Link>
                       </td>
                       <td className="px-6 py-4 text-right font-medium tabular-nums">
-                        {formatCurrency(item.currentPrice || 0)}
+                        {formatPrice(item.currentPrice || 0, item.assetType)}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className={cn(
@@ -264,7 +266,7 @@ export default function Watchlist() {
                     </Link>
                     <div className="flex items-center gap-2 shrink-0">
                       <div className="text-right">
-                        <div className="font-medium text-sm tabular-nums">{formatCurrency(item.currentPrice || 0)}</div>
+                        <div className="font-medium text-sm tabular-nums">{formatPrice(item.currentPrice || 0, item.assetType)}</div>
                         <div className={cn(
                           "inline-flex items-center gap-0.5 text-xs font-semibold tabular-nums mt-0.5",
                           isPositive ? "text-success" : "text-destructive"

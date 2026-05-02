@@ -1,5 +1,6 @@
 import { useGetPortfolioSummary, useGetWatchlistMovers, useGetMarketNews } from "@workspace/api-client-react";
 import { formatCurrency, formatPercentage } from "@/lib/format";
+import { useCurrency } from "@/context/currency";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, Clock, Newspaper, ArrowRight, BarChart2, Wallet } from "lucide-react";
@@ -17,6 +18,7 @@ function getGreeting() {
 
 export default function Dashboard() {
   const { user } = useUser();
+  const { formatPrice } = useCurrency();
   const { data: summary, isLoading: loadingSummary } = useGetPortfolioSummary({ query: { queryKey: ["/api/portfolio/summary"] } });
   const { data: movers, isLoading: loadingMovers } = useGetWatchlistMovers({ query: { queryKey: ["/api/watchlist/movers"] } });
   const { data: newsData, isLoading: loadingNews } = useGetMarketNews({ query: { queryKey: ["/api/market/news"] } });
@@ -155,7 +157,7 @@ export default function Dashboard() {
                             <div className="text-[11px] text-muted-foreground">{asset.name}</div>
                           </div>
                           <div className="text-right">
-                            <div className="font-semibold text-sm tabular-nums">{formatCurrency(asset.currentPrice || 0)}</div>
+                            <div className="font-semibold text-sm tabular-nums">{formatPrice(asset.currentPrice || 0, asset.assetType)}</div>
                             <div className="text-xs font-semibold text-success tabular-nums">
                               +{formatPercentage(asset.priceChangePct || 0)}
                             </div>
@@ -192,7 +194,7 @@ export default function Dashboard() {
                             <div className="text-[11px] text-muted-foreground">{asset.name}</div>
                           </div>
                           <div className="text-right">
-                            <div className="font-semibold text-sm tabular-nums">{formatCurrency(asset.currentPrice || 0)}</div>
+                            <div className="font-semibold text-sm tabular-nums">{formatPrice(asset.currentPrice || 0, asset.assetType)}</div>
                             <div className="text-xs font-semibold text-destructive tabular-nums">
                               {formatPercentage(asset.priceChangePct || 0)}
                             </div>

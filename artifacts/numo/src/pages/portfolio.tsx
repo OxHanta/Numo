@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useGetPortfolioPositions, useGetPortfolioSummary, useAddPortfolioPosition, useDeletePortfolioPosition, useSearchAssets } from "@workspace/api-client-react";
 import { formatCurrency, formatPercentage } from "@/lib/format";
+import { useCurrency } from "@/context/currency";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -17,6 +18,7 @@ import { AssetTypeBadge } from "@/components/asset-type-badge";
 
 export default function Portfolio() {
   const queryClient = useQueryClient();
+  const { formatPrice } = useCurrency();
   const { data: summary, isLoading: loadingSummary } = useGetPortfolioSummary({ query: { queryKey: ["/api/portfolio/summary"] } });
   const { data: positions, isLoading: loadingPositions } = useGetPortfolioPositions({ query: { queryKey: ["/api/portfolio/positions"] } });
 
@@ -188,7 +190,7 @@ export default function Portfolio() {
                       </td>
                       <td className="px-6 py-4 text-right font-medium tabular-nums">{pos.quantity}</td>
                       <td className="px-6 py-4 text-right text-muted-foreground tabular-nums">{formatCurrency(pos.avgBuyPrice)}</td>
-                      <td className="px-6 py-4 text-right font-medium tabular-nums">{formatCurrency(pos.currentPrice || 0)}</td>
+                      <td className="px-6 py-4 text-right font-medium tabular-nums">{formatPrice(pos.currentPrice || 0, pos.assetType)}</td>
                       <td className="px-6 py-4 text-right font-bold tabular-nums">{formatCurrency(pos.currentValue || 0)}</td>
                       <td className="px-6 py-4 text-right">
                         <div className={cn("flex flex-col items-end", isPositive ? "text-success" : "text-destructive")}>

@@ -5,6 +5,7 @@ import yahooFinance from "yahoo-finance2";
 
 const router = Router();
 const POLYGON_KEY = process.env.POLYGON_API_KEY;
+const DEFAULT_NGN_RATE = 1600;
 
 function isNGXTicker(ticker: string): boolean {
   return /\.(LG|LA|NGX)$/i.test(ticker);
@@ -225,6 +226,16 @@ router.get("/market/chart/:ticker", requireAuth, async (req, res) => {
   } catch (err) {
     req.log.error({ err }, "Chart data failed");
     res.status(500).json({ error: "Chart data unavailable" });
+  }
+});
+
+router.get("/market/rate/ngn", async (_req, res) => {
+  try {
+    const q = await (yahooFinance.quote as any)("USDNGN=X", {}, { validateResult: false });
+    const rate = q?.regularMarketPrice ?? DEFAULT_NGN_RATE;
+    res.json({ rate, updatedAt: new Date().toISOString() });
+  } catch {
+    res.json({ rate: DEFAULT_NGN_RATE, updatedAt: new Date().toISOString() });
   }
 });
 

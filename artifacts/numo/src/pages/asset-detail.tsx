@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useRoute, Link } from "wouter";
 import { useGetQuote, useGetChartData, useGetMarketNews } from "@workspace/api-client-react";
 import { PriceChart } from "@/components/price-chart";
-import { formatCurrency, formatPercentage } from "@/lib/format";
+import { formatPercentage } from "@/lib/format";
+import { useCurrency } from "@/context/currency";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Clock, TrendingUp, TrendingDown } from "lucide-react";
@@ -15,6 +16,8 @@ export default function AssetDetail() {
   const [, params] = useRoute("/assets/:ticker");
   const ticker = params?.ticker?.toUpperCase() || "";
   const [timeframe, setTimeframe] = useState<Timeframe>("1M");
+  const { formatPrice } = useCurrency();
+  const detectedAssetType = /\.(LG|LA|NGX)$/i.test(ticker) ? "ngx" : "stock";
 
   const { data: quote, isLoading: loadingQuote } = useGetQuote(
     ticker,
@@ -56,12 +59,12 @@ export default function AssetDetail() {
               </div>
             ) : quote ? (
               <div className="text-left md:text-right">
-                <div className="text-4xl font-bold tracking-tight">{formatCurrency(quote.price)}</div>
+                <div className="text-4xl font-bold tracking-tight">{formatPrice(quote.price, detectedAssetType)}</div>
                 <div className={cn("text-lg font-medium flex items-center gap-2 md:justify-end", 
                   quote.change >= 0 ? "text-success" : "text-destructive"
                 )}>
                   {quote.change >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
-                  {quote.change >= 0 ? "+" : ""}{formatCurrency(quote.change)} ({formatPercentage(quote.changePct)})
+                  {quote.change >= 0 ? "+" : ""}{formatPrice(quote.change, detectedAssetType)} ({formatPercentage(quote.changePct)})
                 </div>
               </div>
             ) : null}
@@ -100,19 +103,19 @@ export default function AssetDetail() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Previous Close</span>
-                  <span className="font-medium tabular-nums">{formatCurrency(quote.previousClose)}</span>
+                  <span className="font-medium tabular-nums">{formatPrice(quote.previousClose, detectedAssetType)}</span>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Open</span>
-                  <span className="font-medium tabular-nums">{formatCurrency(quote.open)}</span>
+                  <span className="font-medium tabular-nums">{formatPrice(quote.open, detectedAssetType)}</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-t border-border/50 pt-2">
                   <span className="text-muted-foreground">Day's High</span>
-                  <span className="font-medium tabular-nums">{formatCurrency(quote.high)}</span>
+                  <span className="font-medium tabular-nums">{formatPrice(quote.high, detectedAssetType)}</span>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Day's Low</span>
-                  <span className="font-medium tabular-nums">{formatCurrency(quote.low)}</span>
+                  <span className="font-medium tabular-nums">{formatPrice(quote.low, detectedAssetType)}</span>
                 </div>
                 {quote.volume && (
                   <div className="flex justify-between items-center py-1 border-t border-border/50 pt-2">
