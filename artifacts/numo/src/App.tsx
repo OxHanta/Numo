@@ -117,9 +117,9 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Card */}
-      <div className="relative z-10 flex-1 flex items-start justify-center px-4 py-6 sm:items-center sm:py-8">
+      <div className="relative z-10 flex-1 flex items-start justify-center py-4 sm:py-8 w-full">
         <div
-          className="w-full max-w-[420px] rounded-2xl overflow-hidden px-5 py-6 sm:px-8 sm:py-8 shadow-2xl"
+          className="w-full mx-3 sm:mx-0 sm:max-w-[420px] rounded-2xl p-6 sm:p-8 shadow-2xl"
           style={{
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(255,255,255,0.08)",
