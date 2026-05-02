@@ -50,9 +50,9 @@ const clerkAppearance = {
     fontSize: "15px",
   },
   elements: {
-    rootBox: "w-full",
-    cardBox: "w-full !shadow-none !border-0 !bg-transparent",
-    card: "!shadow-none !border-0 !bg-transparent !p-0",
+    rootBox: "w-full max-w-full overflow-hidden",
+    cardBox: "w-full max-w-full !shadow-none !border-0 !bg-transparent overflow-hidden",
+    card: "!shadow-none !border-0 !bg-transparent !p-0 w-full max-w-full",
     footer: "!shadow-none !border-0 !bg-transparent",
     header: "!text-center !mb-6",
     headerTitle: "!text-white !font-bold !text-2xl !tracking-tight",
@@ -117,9 +117,9 @@ function AuthLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Card */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
+      <div className="relative z-10 flex-1 flex items-start justify-center px-4 py-6 sm:items-center sm:py-8">
         <div
-          className="w-full max-w-[420px] rounded-2xl p-8 shadow-2xl"
+          className="w-full max-w-[420px] rounded-2xl overflow-hidden px-5 py-6 sm:px-8 sm:py-8 shadow-2xl"
           style={{
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(255,255,255,0.08)",
