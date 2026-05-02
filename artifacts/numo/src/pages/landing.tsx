@@ -45,11 +45,6 @@ export default function Landing() {
             transition={{ duration: 0.5 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold mb-8 uppercase tracking-wider">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-              Precision market intelligence for retail investors
-            </div>
-
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.08]">
               Your Personal{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-warning to-primary">
