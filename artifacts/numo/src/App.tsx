@@ -14,6 +14,7 @@ import Alerts from "./pages/alerts";
 import AssetDetail from "./pages/asset-detail";
 import News from "./pages/news";
 import NotFound from "./pages/not-found";
+import Onboarding from "./pages/onboarding";
 
 const queryClient = new QueryClient();
 
@@ -172,10 +173,11 @@ function ClerkQueryClientCacheInvalidator() {
 }
 
 function HomeRedirect() {
+  const onboardingDone = localStorage.getItem("numo_onboarding_done");
   return (
     <>
       <Show when="signed-in">
-        <Redirect to="/dashboard" />
+        <Redirect to={onboardingDone ? "/dashboard" : "/onboarding"} />
       </Show>
       <Show when="signed-out">
         <Landing />
@@ -222,6 +224,14 @@ function ClerkProviderWithRoutes() {
           <Route path="/" component={HomeRedirect} />
           <Route path="/sign-in/*?" component={SignInPage} />
           <Route path="/sign-up/*?" component={SignUpPage} />
+          <Route path="/onboarding">
+            <Show when="signed-in">
+              <Onboarding />
+            </Show>
+            <Show when="signed-out">
+              <Redirect to="/" />
+            </Show>
+          </Route>
           <Route path="/dashboard">
             <ProtectedRoute component={Dashboard} />
           </Route>

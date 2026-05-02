@@ -21,7 +21,7 @@ export const GetWatchlistResponseItem = zod.object({
   id: zod.number(),
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
   addedAt: zod.coerce.date(),
   currentPrice: zod.number().nullish(),
   priceChange: zod.number().nullish(),
@@ -35,7 +35,7 @@ export const GetWatchlistResponse = zod.array(GetWatchlistResponseItem);
 export const AddToWatchlistBody = zod.object({
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
 });
 
 /**
@@ -59,7 +59,7 @@ export const GetWatchlistMoversResponse = zod.object({
       id: zod.number(),
       ticker: zod.string(),
       name: zod.string(),
-      assetType: zod.enum(["stock", "crypto", "etf"]),
+      assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
       addedAt: zod.coerce.date(),
       currentPrice: zod.number().nullish(),
       priceChange: zod.number().nullish(),
@@ -71,7 +71,7 @@ export const GetWatchlistMoversResponse = zod.object({
       id: zod.number(),
       ticker: zod.string(),
       name: zod.string(),
-      assetType: zod.enum(["stock", "crypto", "etf"]),
+      assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
       addedAt: zod.coerce.date(),
       currentPrice: zod.number().nullish(),
       priceChange: zod.number().nullish(),
@@ -100,7 +100,7 @@ export const GetPortfolioPositionsResponseItem = zod.object({
   id: zod.number(),
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
   quantity: zod.number(),
   avgBuyPrice: zod.number(),
   purchaseDate: zod.coerce.date(),
@@ -122,7 +122,7 @@ export const GetPortfolioPositionsResponse = zod.array(
 export const AddPortfolioPositionBody = zod.object({
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
   quantity: zod.number(),
   avgBuyPrice: zod.number(),
   purchaseDate: zod.coerce.date(),
@@ -145,7 +145,7 @@ export const UpdatePortfolioPositionResponse = zod.object({
   id: zod.number(),
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
   quantity: zod.number(),
   avgBuyPrice: zod.number(),
   purchaseDate: zod.coerce.date(),
@@ -258,7 +258,7 @@ export const SearchAssetsQueryParams = zod.object({
 export const SearchAssetsResponseItem = zod.object({
   ticker: zod.string(),
   name: zod.string(),
-  assetType: zod.enum(["stock", "crypto", "etf"]),
+  assetType: zod.enum(["stock", "crypto", "etf", "ngx"]),
   exchange: zod.string().nullish(),
 });
 export const SearchAssetsResponse = zod.array(SearchAssetsResponseItem);

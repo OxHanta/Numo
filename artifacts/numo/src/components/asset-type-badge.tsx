@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type AssetType = "crypto" | "stock" | "etf" | string;
+type AssetType = "crypto" | "stock" | "etf" | "ngx" | string;
 
 const CONFIG: Record<string, { label: string; className: string }> = {
   crypto: {
@@ -14,6 +14,10 @@ const CONFIG: Record<string, { label: string; className: string }> = {
   etf: {
     label: "ETF",
     className: "bg-violet-500/15 text-violet-400 border border-violet-500/25",
+  },
+  ngx: {
+    label: "NGX",
+    className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25",
   },
 };
 
