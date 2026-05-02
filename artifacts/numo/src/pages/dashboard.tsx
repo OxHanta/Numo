@@ -224,7 +224,7 @@ export default function Dashboard() {
               <div className="space-y-4">
                 {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}
               </div>
-            ) : newsData?.length ? (
+            ) : Array.isArray(newsData) && newsData.length > 0 ? (
               <div className="divide-y divide-border/60">
                 {newsData.slice(0, 4).map((article, i) => (
                   <motion.a
