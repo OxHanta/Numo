@@ -24,11 +24,12 @@ export function Layout({ children }: { children: ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-60 border-r border-border bg-card/60 backdrop-blur">
         {/* Logo */}
-        <div className="px-5 py-5 flex items-center gap-3 border-b border-border/60">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-black text-white text-sm tracking-tighter shadow-md shadow-primary/30">
-            N
+        <div className="px-5 py-4 flex items-center gap-3 border-b border-border/60">
+          <img src="/numo-logo-icon.png" alt="Numo icon" className="w-9 h-9 rounded-xl object-contain shrink-0" />
+          <div className="flex flex-col leading-none">
+            <span className="font-extrabold text-lg tracking-tight lowercase text-foreground">numo</span>
+            <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Market Intelligence</span>
           </div>
-          <span className="font-bold text-lg tracking-tight">Numo</span>
           <span className="ml-auto flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-success opacity-80">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
             Live

@@ -15,8 +15,11 @@ export default function Landing() {
       {/* Header */}
       <header className="py-4 px-6 lg:px-8 flex justify-between items-center border-b border-border bg-background/95 backdrop-blur z-10 sticky top-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/30">N</div>
-          <span className="text-lg font-bold tracking-tight">Numo</span>
+          <img src="/numo-logo-icon.png" alt="Numo" className="w-9 h-9 rounded-xl object-contain" />
+          <div className="flex flex-col leading-none">
+            <span className="font-extrabold text-base tracking-tight lowercase text-foreground">numo</span>
+            <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Market Intelligence</span>
+          </div>
         </div>
         <div className="flex gap-3">
           <Link href="/sign-in">
@@ -150,8 +153,8 @@ export default function Landing() {
 
       <footer className="py-8 px-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-2 text-muted-foreground text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-primary rounded flex items-center justify-center text-white font-black text-[10px]">N</div>
-          <span className="font-semibold text-foreground">Numo</span>
+          <img src="/numo-logo-icon.png" alt="Numo" className="w-6 h-6 rounded-lg object-contain" />
+          <span className="font-extrabold lowercase text-foreground tracking-tight">numo</span>
         </div>
         <p>© {new Date().getFullYear()} Numo Market Intelligence. Built for active traders.</p>
       </footer>
