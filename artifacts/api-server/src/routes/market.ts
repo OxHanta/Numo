@@ -229,6 +229,48 @@ router.get("/market/chart/:ticker", requireAuth, async (req, res) => {
   }
 });
 
+router.get("/market/sectors", requireAuth, async (_req, res) => {
+  const SECTORS = [
+    { key: "TECH", ticker: "XLK", label: "Technology" },
+    { key: "FIN",  ticker: "XLF", label: "Financials" },
+    { key: "HLTH", ticker: "XLV", label: "Health Care" },
+    { key: "ENER", ticker: "XLE", label: "Energy" },
+  ];
+  try {
+    const results = await Promise.all(
+      SECTORS.map(async (s) => {
+        const q = await fetchYahooQuote(s.ticker);
+        return { key: s.key, label: s.label, ticker: s.ticker, changePct: q?.changePct ?? 0, price: q?.price ?? 0 };
+      })
+    );
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch sector data" });
+  }
+});
+
+router.get("/market/crypto-mcap", requireAuth, async (_req, res) => {
+  try {
+    const [quote, historical] = await Promise.all([
+      (yahooFinance.quote as any)("^CRYUSD", {}, { validateResult: false }),
+      (yahooFinance.historical as any)("^CRYUSD", {
+        period1: new Date(Date.now() - 8 * 86400000).toISOString().split("T")[0],
+        period2: new Date().toISOString().split("T")[0],
+        interval: "1d",
+      }, { validateResult: false }).catch(() => []),
+    ]);
+    const mcap = quote?.regularMarketPrice ?? 0;
+    const changePct = quote?.regularMarketChangePercent ?? 0;
+    const bars = (historical || []).map((c: any) => ({
+      date: new Date(c.date).toLocaleDateString("en-US", { weekday: "short" }),
+      value: c.close ?? 0,
+    }));
+    res.json({ mcap, changePct, bars });
+  } catch {
+    res.status(500).json({ error: "Failed to fetch crypto market cap" });
+  }
+});
+
 router.get("/market/rate/ngn", async (_req, res) => {
   try {
     const q = await (yahooFinance.quote as any)("USDNGN=X", {}, { validateResult: false });

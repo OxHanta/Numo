@@ -1,4 +1,5 @@
 import { useGetPortfolioSummary, useGetWatchlistMovers, useGetMarketNews } from "@workspace/api-client-react";
+import { useQuery } from "@tanstack/react-query";
 import { formatCurrency, formatPercentage } from "@/lib/format";
 import { useCurrency } from "@/context/currency";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,11 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/react";
+import { SectorHeatmap } from "@/components/dashboard/sector-heatmap";
+import { MarketCapTrend } from "@/components/dashboard/market-cap-trend";
+import { PortfolioGrowth } from "@/components/dashboard/portfolio-growth";
+import { TopPerformers } from "@/components/dashboard/top-performers";
+import { TrendingInsight } from "@/components/dashboard/trending-insight";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -16,12 +22,20 @@ function getGreeting() {
   return "Good evening";
 }
 
+interface SectorData { key: string; label: string; changePct: number; }
+
 export default function Dashboard() {
   const { user } = useUser();
   const { formatPrice } = useCurrency();
   const { data: summary, isLoading: loadingSummary } = useGetPortfolioSummary({ query: { queryKey: ["/api/portfolio/summary"] } });
   const { data: movers, isLoading: loadingMovers } = useGetWatchlistMovers({ query: { queryKey: ["/api/watchlist/movers"] } });
   const { data: newsData, isLoading: loadingNews } = useGetMarketNews({ query: { queryKey: ["/api/market/news"] } });
+  const { data: sectors, isLoading: loadingSectors } = useQuery<SectorData[]>({
+    queryKey: ["/api/market/sectors"],
+    queryFn: () => fetch("/api/market/sectors", { credentials: "include" }).then(r => r.json()),
+    staleTime: 60_000,
+    retry: false,
+  });
 
   const dayChangePositive = (summary?.dayChange || 0) >= 0;
   const pnlPositive = (summary?.totalPnl || 0) >= 0;
@@ -41,7 +55,6 @@ export default function Dashboard() {
 
       {/* Portfolio Summary Cards */}
       <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-3">
-        {/* Total Value */}
         <Card className="bg-card border border-border relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -51,82 +64,74 @@ export default function Dashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            {loadingSummary ? (
-              <Skeleton className="h-8 w-[140px]" />
-            ) : (
+            {loadingSummary ? <Skeleton className="h-8 w-[140px]" /> : (
               <div className="text-2xl md:text-3xl font-bold tracking-tight">{formatCurrency(summary?.totalValue || 0)}</div>
             )}
           </CardContent>
         </Card>
 
-        {/* Day Change */}
         <Card className={cn("bg-card border border-border relative overflow-hidden")}>
-          <div className={cn(
-            "absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none",
-            dayChangePositive ? "from-success/5" : "from-destructive/5"
-          )} />
+          <div className={cn("absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none", dayChangePositive ? "from-success/5" : "from-destructive/5")} />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Day Change</CardTitle>
-            <div className={cn(
-              "w-8 h-8 rounded-md flex items-center justify-center",
-              dayChangePositive ? "bg-success/10" : "bg-destructive/10"
-            )}>
-              {dayChangePositive
-                ? <TrendingUp className="w-4 h-4 text-success" />
-                : <TrendingDown className="w-4 h-4 text-destructive" />}
+            <div className={cn("w-8 h-8 rounded-md flex items-center justify-center", dayChangePositive ? "bg-success/10" : "bg-destructive/10")}>
+              {dayChangePositive ? <TrendingUp className="w-4 h-4 text-success" /> : <TrendingDown className="w-4 h-4 text-destructive" />}
             </div>
           </CardHeader>
           <CardContent>
-            {loadingSummary ? (
-              <Skeleton className="h-8 w-[140px]" />
-            ) : (
-              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2",
-                dayChangePositive ? "text-success" : "text-destructive"
-              )}>
+            {loadingSummary ? <Skeleton className="h-8 w-[140px]" /> : (
+              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2", dayChangePositive ? "text-success" : "text-destructive")}>
                 {formatCurrency(summary?.dayChange || 0)}
-                <span className="text-sm md:text-base font-semibold opacity-70">
-                  {formatPercentage(summary?.dayChangePct || 0)}
-                </span>
+                <span className="text-sm md:text-base font-semibold opacity-70">{formatPercentage(summary?.dayChangePct || 0)}</span>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* All-Time P&L */}
         <Card className={cn("bg-card border border-border relative overflow-hidden")}>
-          <div className={cn(
-            "absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none",
-            pnlPositive ? "from-success/5" : "from-destructive/5"
-          )} />
+          <div className={cn("absolute inset-0 bg-gradient-to-br to-transparent pointer-events-none", pnlPositive ? "from-success/5" : "from-destructive/5")} />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">All-Time P&L</CardTitle>
-            <div className={cn(
-              "w-8 h-8 rounded-md flex items-center justify-center",
-              pnlPositive ? "bg-success/10" : "bg-destructive/10"
-            )}>
+            <div className={cn("w-8 h-8 rounded-md flex items-center justify-center", pnlPositive ? "bg-success/10" : "bg-destructive/10")}>
               <BarChart2 className={cn("w-4 h-4", pnlPositive ? "text-success" : "text-destructive")} />
             </div>
           </CardHeader>
           <CardContent>
-            {loadingSummary ? (
-              <Skeleton className="h-8 w-[140px]" />
-            ) : (
-              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2",
-                pnlPositive ? "text-success" : "text-destructive"
-              )}>
+            {loadingSummary ? <Skeleton className="h-8 w-[140px]" /> : (
+              <div className={cn("text-2xl md:text-3xl font-bold tracking-tight flex items-baseline gap-2", pnlPositive ? "text-success" : "text-destructive")}>
                 {pnlPositive ? "+" : ""}{formatCurrency(summary?.totalPnl || 0)}
-                <span className="text-sm md:text-base font-semibold opacity-70">
-                  {formatPercentage(summary?.totalPnlPct || 0)}
-                </span>
+                <span className="text-sm md:text-base font-semibold opacity-70">{formatPercentage(summary?.totalPnlPct || 0)}</span>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Lower grid — stack on mobile, 2-col on md+ */}
+      {/* Row 2: Portfolio Growth + Sector Heatmap */}
+      <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-5">
+        <div className="md:col-span-3">
+          <PortfolioGrowth summary={summary as any} isLoading={loadingSummary} />
+        </div>
+        <div className="md:col-span-2">
+          <SectorHeatmap />
+        </div>
+      </div>
+
+      {/* Row 3: Top Performers + Market Cap Trend + Trending Insight */}
+      <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-3">
+        <div className="md:col-span-1">
+          <TopPerformers gainers={Array.isArray(movers?.gainers) ? (movers.gainers as any[]) : []} isLoading={loadingMovers} />
+        </div>
+        <div className="md:col-span-1">
+          <MarketCapTrend />
+        </div>
+        <div className="md:col-span-1">
+          <TrendingInsight sectors={sectors ?? []} isLoading={loadingSectors} />
+        </div>
+      </div>
+
+      {/* Row 4: Watchlist Movers + Market News */}
       <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
-        {/* Watchlist Movers */}
         <Card className="col-span-1 border border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <CardTitle className="text-base font-bold">Watchlist Movers</CardTitle>
@@ -136,20 +141,16 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-5">
-              {/* Gainers */}
               <div>
                 <div className="flex items-center gap-1.5 mb-3">
                   <TrendingUp className="w-3.5 h-3.5 text-success" />
                   <span className="text-xs font-semibold uppercase tracking-wider text-success">Top Gainers</span>
                 </div>
                 {loadingMovers ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
+                  <div className="space-y-2"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div>
                 ) : Array.isArray(movers?.gainers) && movers.gainers.length > 0 ? (
                   <div className="space-y-1">
-                    {movers.gainers.slice(0, 3).map(asset => (
+                    {movers.gainers.slice(0, 3).map((asset: any) => (
                       <Link key={asset.ticker} href={`/assets/${asset.ticker}`}>
                         <div className="flex justify-between items-center px-3 py-2.5 rounded-lg hover:bg-secondary/60 transition-colors cursor-pointer group">
                           <div>
@@ -158,9 +159,7 @@ export default function Dashboard() {
                           </div>
                           <div className="text-right">
                             <div className="font-semibold text-sm tabular-nums">{formatPrice(asset.currentPrice || 0, asset.assetType)}</div>
-                            <div className="text-xs font-semibold text-success tabular-nums">
-                              +{formatPercentage(asset.priceChangePct || 0)}
-                            </div>
+                            <div className="text-xs font-semibold text-success tabular-nums">+{formatPercentage(asset.priceChangePct || 0)}</div>
                           </div>
                         </div>
                       </Link>
@@ -173,20 +172,16 @@ export default function Dashboard() {
 
               <div className="h-px bg-border/60" />
 
-              {/* Losers */}
               <div>
                 <div className="flex items-center gap-1.5 mb-3">
                   <TrendingDown className="w-3.5 h-3.5 text-destructive" />
                   <span className="text-xs font-semibold uppercase tracking-wider text-destructive">Top Losers</span>
                 </div>
                 {loadingMovers ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
+                  <div className="space-y-2"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div>
                 ) : Array.isArray(movers?.losers) && movers.losers.length > 0 ? (
                   <div className="space-y-1">
-                    {movers.losers.slice(0, 3).map(asset => (
+                    {movers.losers.slice(0, 3).map((asset: any) => (
                       <Link key={asset.ticker} href={`/assets/${asset.ticker}`}>
                         <div className="flex justify-between items-center px-3 py-2.5 rounded-lg hover:bg-secondary/60 transition-colors cursor-pointer group">
                           <div>
@@ -195,9 +190,7 @@ export default function Dashboard() {
                           </div>
                           <div className="text-right">
                             <div className="font-semibold text-sm tabular-nums">{formatPrice(asset.currentPrice || 0, asset.assetType)}</div>
-                            <div className="text-xs font-semibold text-destructive tabular-nums">
-                              {formatPercentage(asset.priceChangePct || 0)}
-                            </div>
+                            <div className="text-xs font-semibold text-destructive tabular-nums">{formatPercentage(asset.priceChangePct || 0)}</div>
                           </div>
                         </div>
                       </Link>
@@ -211,7 +204,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Market News */}
         <Card className="col-span-1 border border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -223,12 +215,10 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="pt-0">
             {loadingNews ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}
-              </div>
+              <div className="space-y-4">{[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}</div>
             ) : Array.isArray(newsData) && newsData.length > 0 ? (
               <div className="divide-y divide-border/60">
-                {newsData.slice(0, 4).map((article, i) => (
+                {newsData.slice(0, 4).map((article: any, i: number) => (
                   <motion.a
                     key={article.id}
                     href={article.url}
@@ -253,9 +243,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground text-sm">
-                No recent news available.
-              </div>
+              <div className="text-center py-8 text-muted-foreground text-sm">No recent news available.</div>
             )}
           </CardContent>
         </Card>
