@@ -40,7 +40,7 @@ export const clerkAppearance = {
     rootBox: "w-full max-w-full overflow-hidden",
     cardBox: "w-full max-w-full !shadow-none !border-0 !bg-transparent overflow-hidden",
     card: "!shadow-none !border-0 !bg-transparent !p-0 w-full max-w-full",
-    footer: "!shadow-none !border-0 !bg-transparent",
+    footer: "!hidden",
     header: "!text-center !mb-6",
     headerTitle: "!text-white !font-bold !text-2xl !tracking-tight",
     headerSubtitle: "!text-white/50 !text-sm !mt-1",
@@ -57,9 +57,6 @@ export const clerkAppearance = {
       "!bg-white/5 !border !border-white/10 !text-white placeholder:!text-white/20 focus:!border-[#4CAF50] focus:!ring-0 !rounded-lg !h-11",
     formButtonPrimary:
       "!bg-[#4CAF50] hover:!bg-[#43A047] active:!bg-[#388E3C] !text-white !font-semibold !rounded-lg !h-11 !mt-2 !shadow-lg !shadow-green-900/30",
-    footerActionLink: "!text-[#4CAF50] hover:!text-[#66BB6A] !font-semibold",
-    footerActionText: "!text-white/40 !text-sm",
-    footerAction: "!mt-5 !text-center !text-sm",
     identityPreviewText: "!text-white",
     identityPreviewEditButton: "!text-[#4CAF50]",
     formFieldSuccessText: "!text-[#4CAF50]",
@@ -118,40 +115,32 @@ export function AuthModalProvider({ children, basePath }: AuthModalProviderProps
           />
 
           <div
-            className="relative w-full max-w-[420px] rounded-2xl shadow-2xl"
+            className="relative w-full max-w-[400px] rounded-2xl shadow-2xl overflow-hidden"
             style={{
-              background: "rgba(14, 22, 13, 0.97)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(14, 22, 13, 0.98)",
+              border: "1px solid rgba(255,255,255,0.09)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <button
               onClick={close}
-              className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white/90 hover:bg-white/10 transition-all"
+              className="absolute top-3.5 right-3.5 z-10 w-7 h-7 flex items-center justify-center rounded-full text-white/35 hover:text-white/80 hover:bg-white/10 transition-all"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Logo */}
-            <div className="flex justify-center pt-7 pb-1">
-              <div className="flex items-center gap-2.5">
-                <img
-                  src={`${basePath}/numo-logo-icon.png`}
-                  alt="Numo"
-                  className="w-9 h-9 rounded-xl object-contain shadow-lg shadow-green-900/40"
-                />
-                <div className="flex flex-col leading-none">
-                  <span className="font-extrabold text-lg lowercase text-white tracking-tight">numo</span>
-                  <span className="text-[9px] font-semibold uppercase tracking-widest text-white/35">
-                    Market Intelligence
-                  </span>
-                </div>
-              </div>
+            {/* Logo icon only — centered */}
+            <div className="flex justify-center pt-8 pb-0">
+              <img
+                src={`${basePath}/numo-logo-icon.png`}
+                alt="Numo"
+                className="w-11 h-11 rounded-2xl object-contain shadow-lg shadow-green-900/40"
+              />
             </div>
 
             {/* Clerk form */}
-            <div className="px-7 pb-7 pt-2">
+            <div className="px-6 pb-6 pt-1">
               {mode === "sign-in" ? (
                 <SignIn
                   routing="hash"
@@ -167,14 +156,15 @@ export function AuthModalProvider({ children, basePath }: AuthModalProviderProps
               )}
             </div>
 
-            {/* Switch mode */}
-            <div className="border-t border-white/[0.07] py-4 text-center text-sm text-white/40">
+            {/* Switch mode — single clean footer */}
+            <div className="border-t border-white/[0.06] py-3.5 text-center text-sm" style={{ color: "rgba(255,255,255,0.35)" }}>
               {mode === "sign-in" ? (
                 <>
                   Don't have an account?{" "}
                   <button
                     onClick={() => setMode("sign-up")}
-                    className="text-[#4CAF50] font-semibold hover:text-[#66BB6A] transition-colors"
+                    className="font-semibold transition-colors"
+                    style={{ color: "#4CAF50" }}
                   >
                     Sign up
                   </button>
@@ -184,7 +174,8 @@ export function AuthModalProvider({ children, basePath }: AuthModalProviderProps
                   Already have an account?{" "}
                   <button
                     onClick={() => setMode("sign-in")}
-                    className="text-[#4CAF50] font-semibold hover:text-[#66BB6A] transition-colors"
+                    className="font-semibold transition-colors"
+                    style={{ color: "#4CAF50" }}
                   >
                     Sign in
                   </button>
