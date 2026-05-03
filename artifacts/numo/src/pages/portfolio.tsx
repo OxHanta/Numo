@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { motion, AnimatePresence } from "framer-motion";
 import { AssetTypeBadge } from "@/components/asset-type-badge";
+import { AssetAllocationChart } from "@/components/portfolio-allocation-chart";
 
 export default function Portfolio() {
   const queryClient = useQueryClient();
@@ -117,6 +118,9 @@ export default function Portfolio() {
           </div>
         ))}
       </div>
+
+      {/* Allocation Chart */}
+      <AssetAllocationChart positions={positionsArray} isLoading={loadingPositions} />
 
       {/* Positions */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
